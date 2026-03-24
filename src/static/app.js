@@ -470,6 +470,20 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.entries(filteredActivities).forEach(([name, details]) => {
       renderActivityCard(name, details);
     });
+
+    // If the URL has an ?activity= parameter, scroll to and highlight that card
+    const urlParams = new URLSearchParams(window.location.search);
+    const sharedActivity = urlParams.get("activity");
+    if (sharedActivity) {
+      const cards = activitiesList.querySelectorAll(".activity-card");
+      cards.forEach((card) => {
+        const title = card.querySelector("h4");
+        if (title && title.textContent === sharedActivity) {
+          card.classList.add("highlighted");
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      });
+    }
   }
 
   // Function to render a single activity card
@@ -518,6 +532,10 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
     `;
+
+    // Build share URL with activity name as a query parameter
+    const shareUrl = `${window.location.origin}${window.location.pathname}?activity=${encodeURIComponent(name)}`;
+    const shareText = `Check out ${name} at Mergington High School! ${details.description}`;
 
     activityCard.innerHTML = `
       ${tagHtml}
@@ -569,6 +587,21 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
       </div>
+      <div class="share-buttons">
+        <span class="share-label">Share:</span>
+        <button class="share-btn share-twitter tooltip" title="Share on X (Twitter)">
+          𝕏
+          <span class="tooltip-text">Share on X (Twitter)</span>
+        </button>
+        <button class="share-btn share-facebook tooltip" title="Share on Facebook">
+          f
+          <span class="tooltip-text">Share on Facebook</span>
+        </button>
+        <button class="share-btn share-copy tooltip" title="Copy link">
+          🔗
+          <span class="tooltip-text">Copy link to clipboard</span>
+        </button>
+      </div>
     `;
 
     // Add click handlers for delete buttons
@@ -586,6 +619,33 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Share button event handlers
+    activityCard.querySelector(".share-twitter").addEventListener("click", () => {
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      window.open(twitterUrl, "_blank", "noopener,noreferrer");
+    });
+
+    activityCard.querySelector(".share-facebook").addEventListener("click", () => {
+      const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+      window.open(fbUrl, "_blank", "noopener,noreferrer");
+    });
+
+    const copyBtn = activityCard.querySelector(".share-copy");
+    copyBtn.addEventListener("click", () => {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        copyBtn.classList.add("copied");
+        const tooltip = copyBtn.querySelector(".tooltip-text");
+        const originalText = tooltip.textContent;
+        tooltip.textContent = "Copied!";
+        setTimeout(() => {
+          copyBtn.classList.remove("copied");
+          tooltip.textContent = originalText;
+        }, 2000);
+      }).catch(() => {
+        showMessage("Could not copy the link. Please copy the URL from your browser's address bar.", "error");
+      });
+    });
 
     activitiesList.appendChild(activityCard);
   }
