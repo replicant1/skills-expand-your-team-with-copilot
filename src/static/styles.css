@@ -32,6 +32,36 @@
   --info-light: #d1ecf1;
 }
 
+/* Dark mode theme */
+[data-theme="dark"] {
+  --primary: #3f4fb8;
+  --primary-light: #6a7fd4;
+  --primary-dark: #1a237e;
+  --primary-text: #ffffff;
+
+  --secondary: #ff8f00;
+  --secondary-light: #ffb300;
+  --secondary-dark: #e65100;
+  --secondary-text: #ffffff;
+
+  --background: #121212;
+  --surface: #1e1e2e;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0b8;
+  --border: #2d2d4e;
+  --border-light: #3a3a5c;
+  --border-focus: #4a4a7c;
+
+  --success: #4caf50;
+  --success-light: #1b3a1c;
+  --warning: #ffa726;
+  --warning-light: #3d2e00;
+  --error: #ef5350;
+  --error-light: #3d1212;
+  --info: #29b6f6;
+  --info-light: #0d2a38;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -612,11 +642,41 @@ footer {
   }
 }
 
-/* User controls in header */
+/* Dark mode overrides for form elements */
+[data-theme="dark"] .search-box input {
+  background-color: var(--surface);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] select {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+
 #user-controls {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#dark-mode-toggle {
+  padding: 4px 10px;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+#dark-mode-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] #dark-mode-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 #user-status {
